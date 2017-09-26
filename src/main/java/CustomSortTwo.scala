@@ -14,7 +14,7 @@ import org.apache.spark.{SparkConf, SparkContext}
 //}
 //object CustomSortTwo {
 //  def main(args: Array[String]): Unit = {
-//    val conf = new SparkConf().setAppName("CustomSortOne")
+//    val conf = new SparkConf().setAppName("CustomSortTwo")
 //    val sc = new SparkContext(conf)
 //    val rdd1 = sc.parallelize(List(("Yufeihong", 90, 28, 1), ("angelababy", 90, 27, 2), ("JuJingYi", 95, 22, 3)))
 //    import OrderContext._

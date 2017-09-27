@@ -1,5 +1,6 @@
 /**
   * Created by jinyuzhang on 9/26/17.
+  * 自定义分区器，避免碰撞
   */
 import java.net.URL
 
@@ -28,16 +29,19 @@ object UrlCountPartition {
 
     val ints = rdd3.map(_._1).distinct().collect()
 
-    val hostParitioner = new HostParitioner(ints)
+    val hostPartitioner = new HostPartitioner(ints)
 
     //    val rdd4 = rdd3.partitionBy(new HashPartitioner(ints.length))
 
-    val rdd4 = rdd3.partitionBy(hostParitioner).mapPartitions(it => {
+    val rdd4 = rdd3.partitionBy(hostPartitioner).mapPartitions(it => {
       it.toList.sortBy(_._2._2).reverse.take(2).iterator
     })
 
-    rdd4.saveAsTextFile("c://out4")
+    rdd4.saveAsTextFile(args(1))
 
+    val rdd5 = rdd3.partitionBy(hostPartitioner)
+
+    rdd5.saveAsTextFile(args(2))
 
     //println(rdd4.collect().toBuffer)
     sc.stop()
@@ -49,18 +53,16 @@ object UrlCountPartition {
   * 决定了数据到哪个分区里面
   * @param ins
   */
-class HostParitioner(ins: Array[String]) extends Partitioner {
-
+class HostPartitioner(ins: Array[String]) extends Partitioner {
   val parMap = new mutable.HashMap[String, Int]()
   var count = 0
-  for(i <- ins){
+  for(i <- ins) {
     parMap += (i -> count)
     count += 1
   }
-
   override def numPartitions: Int = ins.length
 
   override def getPartition(key: Any): Int = {
-    parMap.getOrElse(key.toString, 0)
+    parMap.getOrElse(key.toString(), 0)
   }
 }

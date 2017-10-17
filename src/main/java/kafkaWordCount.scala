@@ -7,7 +7,7 @@ import org.apache.spark.streaming.kafka.KafkaUtils
 import org.apache.spark.streaming.{Seconds, StreamingContext}
 
 object kafkaWordCount {
-  val updateFunc = (iter: Iterator[(String, Seq[Int], Option[Int])]) => {\
+  val updateFunc = (iter: Iterator[(String, Seq[Int], Option[Int])]) => {
     iter.flatMap { case (x, y, z) => Some(y.sum + z.getOrElse(0)).map(i => (x, i)) }
   }
   def main(args: Array[String]) {
